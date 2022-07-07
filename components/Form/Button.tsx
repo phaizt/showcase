@@ -3,10 +3,11 @@ import { variant } from "styled-system"
 
 type PropType = {
     variant?: string
+    sx?: string
 }
 
 export const Button = styled.button.attrs((props: PropType) => ({
-    className: "btn",
+    className: `btn ${props.sx}`,
 }))<PropType>`
     ${variant({
         variants: {

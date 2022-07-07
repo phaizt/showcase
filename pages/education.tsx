@@ -2,6 +2,9 @@ import { useState, useEffect } from "react"
 import type { NextPage } from "next"
 import styled from "styled-components"
 import { useRouter } from "next/router"
+import { Button } from "components/Form/Button"
+import Modal from "components/Modal/Modal"
+import EducationForm from "components/pages/education/education.form"
 
 const FormWrapper = styled.div`
     display: flex;
@@ -14,13 +17,6 @@ const ButtonWrapper = styled.div`
     justify-content: center;
 `
 
-// const AddButton = styled(Button)`
-//     background-color: #b4b4b4;
-//     border-color: transparent;
-//     border-radius: 0;
-//     color: #000;
-// `
-
 const Title = styled.p`
     text-align: center;
 `
@@ -28,26 +24,19 @@ const Title = styled.p`
 const Home: NextPage = () => {
     const router = useRouter()
     const { name } = router.query
-    const [query, setQuery] = useState("")
+    const [open, setOpen] = useState(false)
 
-    const handleClick = () => {
-        router.push({
-            pathname: "/education",
-            query: { name: query },
-        })
-    }
-
-    useEffect(() => {
-        setQuery(name as string)
-    }, [name])
     return (
         <FormWrapper>
             <Title>Welcome to {name}`s education page</Title>
             <ButtonWrapper>
-                {/* <AddButton variant="secondary" onClick={handleClick}>
+                <Button variant="primary" onClick={() => setOpen(true)}>
                     Add new Education
-                </AddButton> */}
+                </Button>
             </ButtonWrapper>
+            <Modal open={open} setClose={setOpen}>
+                <EducationForm />
+            </Modal>
         </FormWrapper>
     )
 }
