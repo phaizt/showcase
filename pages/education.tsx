@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react"
 import type { NextPage } from "next"
-import styled from "@emotion/styled"
-import { Button, Form } from "react-bootstrap"
+import styled from "styled-components"
 import { useRouter } from "next/router"
 
 const FormWrapper = styled.div`
@@ -15,31 +14,15 @@ const ButtonWrapper = styled.div`
     justify-content: center;
 `
 
-const EnterButton = styled(Button)`
-    background-color: #b4b4b4;
-    border-color: transparent;
-    border-radius: 0;
-    color: #000;
-`
-
-const TextField = styled(Form.Control)`
-    align-self: center;
-    width: 50%;
-
-    @media screen and (max-width: 576px) {
-        width: 90%;
-        body {
-            background-color: lightblue;
-        }
-    }
-`
+// const AddButton = styled(Button)`
+//     background-color: #b4b4b4;
+//     border-color: transparent;
+//     border-radius: 0;
+//     color: #000;
+// `
 
 const Title = styled.p`
     text-align: center;
-
-    &:first-of-type {
-        margin-bottom: 3rem;
-    }
 `
 
 const Home: NextPage = () => {
@@ -59,13 +42,11 @@ const Home: NextPage = () => {
     }, [name])
     return (
         <FormWrapper>
-            <Title>Hi there! Welcome to education showcase</Title>
-            <Title>Type your name and click &ldquo;Enter&ldquo; below to begin</Title>
-            <TextField type="text" placeholder="Your Name" value={query} onChange={(e) => setQuery(e.target.value)} />
+            <Title>Welcome to {name}`s education page</Title>
             <ButtonWrapper>
-                <EnterButton variant="secondary" onClick={handleClick}>
-                    Enter
-                </EnterButton>
+                {/* <AddButton variant="secondary" onClick={handleClick}>
+                    Add new Education
+                </AddButton> */}
             </ButtonWrapper>
         </FormWrapper>
     )
