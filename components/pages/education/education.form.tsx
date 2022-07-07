@@ -15,7 +15,7 @@ interface Values {
 const App = () => {
     return (
         <div>
-            <h1>Signup</h1>
+            <h1>Education</h1>
             <Formik
                 initialValues={{
                     school: "",
