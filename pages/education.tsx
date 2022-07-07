@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import type { NextPage } from "next"
 import styled from "@emotion/styled"
 import { Button, Form } from "react-bootstrap"
@@ -44,21 +44,28 @@ const Title = styled.p`
 
 const Home: NextPage = () => {
     const router = useRouter()
-
+    const { name } = router.query
     const [query, setQuery] = useState("")
+
     const handleClick = () => {
-      router.push({
-          pathname: "/education",
-          query: { name: query },
-      })
-  }
+        router.push({
+            pathname: "/education",
+            query: { name: query },
+        })
+    }
+
+    useEffect(() => {
+        setQuery(name as string)
+    }, [name])
     return (
         <FormWrapper>
             <Title>Hi there! Welcome to education showcase</Title>
             <Title>Type your name and click &ldquo;Enter&ldquo; below to begin</Title>
-            <TextField type="text" placeholder="Your Name" onChange={(e) => setQuery(e.target.value)} />
+            <TextField type="text" placeholder="Your Name" value={query} onChange={(e) => setQuery(e.target.value)} />
             <ButtonWrapper>
-                <EnterButton variant="secondary" onClick={handleClick}>Enter</EnterButton>
+                <EnterButton variant="secondary" onClick={handleClick}>
+                    Enter
+                </EnterButton>
             </ButtonWrapper>
         </FormWrapper>
     )
