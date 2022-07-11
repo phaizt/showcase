@@ -5,6 +5,9 @@ import { useRouter } from "next/router"
 import { Button } from "components/Form/Button"
 import Modal from "components/Modal/Modal"
 import EducationForm from "components/pages/education/education.form"
+import { useAppDispatch } from "store/main-store"
+import { EducationType } from "types/education.type"
+import { educationAction } from "store/reducers/education.reducer"
 
 const FormWrapper = styled.div`
     display: flex;
@@ -47,9 +50,14 @@ const Title = styled.p`
 `
 
 const Home: NextPage = () => {
+    const dispatch = useAppDispatch()
     const router = useRouter()
     const { name } = router.query
     const [open, setOpen] = useState(false)
+
+    const handleSubmit = (params: EducationType) => {
+        dispatch(educationAction.save(params))
+    }
 
     return (
         <FormWrapper>
@@ -70,7 +78,7 @@ const Home: NextPage = () => {
                 </ContentBox>
             </ContentWrapper>
             <Modal open={open} setClose={setOpen}>
-                <EducationForm />
+                <EducationForm submit={handleSubmit} />
             </Modal>
         </FormWrapper>
     )

@@ -1,18 +1,13 @@
 import * as React from "react"
 import { Formik, Field, Form, FormikHelpers } from "formik"
 import { Button } from "components/Form/Button"
+import { EducationType } from "types/education.type"
 
-interface Values {
-    school: string
-    degree: string
-    field_of_study: string
-    start_year: string
-    end_year: string
-    grade: string
-    description: string
+type Props = {
+    submit: (params: EducationType) => void
 }
 
-const App = () => {
+const App: React.FC<Props> = (props) => {
     return (
         <div>
             <h1>Education</h1>
@@ -26,11 +21,9 @@ const App = () => {
                     grade: "",
                     description: "",
                 }}
-                onSubmit={(values: Values, { setSubmitting }: FormikHelpers<Values>) => {
-                    setTimeout(() => {
-                        alert(JSON.stringify(values, null, 2))
-                        setSubmitting(false)
-                    }, 500)
+                onSubmit={(values: EducationType, { setSubmitting, resetForm }: FormikHelpers<EducationType>) => {
+                    props.submit(values)
+                    resetForm()
                 }}
             >
                 <Form className="d-flex flex-column gap-3">

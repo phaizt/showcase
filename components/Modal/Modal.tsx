@@ -12,7 +12,7 @@ const Modal: React.FC<PropsType> = (props) => {
     const { open, setClose, children } = props
     return (
         <>
-            <ReactModal isOpen={open}>
+            <ReactModal isOpen={open} ariaHideApp={false}>
                 <div className="d-flex">
                     <Button variant="secondary" sx="ms-auto" onClick={() => setClose(false)}>
                         Close Modal
