@@ -1,13 +1,14 @@
-import { useState, useEffect } from "react"
+import { useEffect, useState } from "react"
 import type { NextPage } from "next"
 import styled from "styled-components"
 import { useRouter } from "next/router"
 import { Button } from "components/Form/Button"
 import Modal from "components/Modal/Modal"
 import EducationForm from "components/pages/education/education.form"
-import { useAppDispatch } from "store/main-store"
+import { useAppDispatch, useAppSelector, RootState } from "store/main-store"
 import { EducationType } from "types/education.type"
 import { educationAction } from "store/reducers/education.reducer"
+import axios from "axios"
 
 const FormWrapper = styled.div`
     display: flex;
@@ -49,11 +50,20 @@ const Title = styled.p`
     text-align: center;
 `
 
-const Home: NextPage = () => {
+const Bookmark = styled.ul`
+    list-style-type: none;
+`
+
+const Home: NextPage<{ educations: EducationType[] }> = (props) => {
+    const { educations } = props
     const dispatch = useAppDispatch()
     const router = useRouter()
     const { name } = router.query
     const [open, setOpen] = useState(false)
+
+    useEffect(() => {
+        dispatch(educationAction.setData(educations))
+    }, [dispatch, educations])
 
     const handleSubmit = (params: EducationType) => {
         dispatch(educationAction.save(params))
@@ -69,8 +79,11 @@ const Home: NextPage = () => {
             </ButtonWrapper>
             <ContentWrapper>
                 <SideBox>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam eos perspiciatis quam animi minima molestiae ducimus eveniet
-                    alias, nemo modi odit quidem exercitationem adipisci unde ex doloremque rem. Id, excepturi.
+                    <Bookmark>
+                        {educations.map((el, idx) => (
+                            <li key={idx}>{el.school}</li>
+                        ))}
+                    </Bookmark>
                 </SideBox>
                 <ContentBox>
                     Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam eos perspiciatis quam animi minima molestiae ducimus eveniet
@@ -82,6 +95,19 @@ const Home: NextPage = () => {
             </Modal>
         </FormWrapper>
     )
+}
+
+export const getStaticProps = async () => {
+    const data = await axios
+        .get(`${process.env.NEXT_PUBLIC_API_URL}/education`)
+        .then((response) => {
+            return response.data
+        })
+        .catch((err) => {})
+    return {
+        props: { educations: data.data },
+        revalidate: 1,
+    }
 }
 
 export default Home

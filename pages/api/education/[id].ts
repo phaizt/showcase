@@ -2,7 +2,6 @@
 import type { NextApiRequest, NextApiResponse } from "next"
 import { connect } from "db/DataSource"
 import { Education } from "db/entity/education.entity"
-import { EducationType } from "types/education.type"
 
 type Data<T = {}> = {
     status: string
