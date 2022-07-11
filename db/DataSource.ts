@@ -11,6 +11,7 @@ export const SqliteDataSource = new DataSource({
 
 export const connect = async () => {
     if (!SqliteDataSource.isInitialized) {
-        await SqliteDataSource.initialize()
+        return await SqliteDataSource.initialize()
     }
+    return SqliteDataSource
 }
