@@ -16,6 +16,31 @@ const ButtonWrapper = styled.div`
     display: flex;
     justify-content: center;
 `
+const ContentWrapper = styled.div`
+    display: flex;
+    gap: 1rem;
+    flex-direction: row;
+    @media screen and (max-width: 991px) {
+        flex-direction: column;
+    }
+`
+
+const SideBox = styled.div`
+    background: #cecece;
+    width: 30%;
+    padding: 1rem;
+    @media screen and (max-width: 991px) {
+        width: 100%;
+    }
+`
+const ContentBox = styled.div`
+    background: #cecece;
+    width: 70%;
+    padding: 1rem;
+    @media screen and (max-width: 991px) {
+        width: 100%;
+    }
+`
 
 const Title = styled.p`
     text-align: center;
@@ -29,11 +54,21 @@ const Home: NextPage = () => {
     return (
         <FormWrapper>
             <Title>Welcome to {name}`s education page</Title>
-            <ButtonWrapper>
+            <ButtonWrapper className="mb-3">
                 <Button variant="primary" onClick={() => setOpen(true)}>
                     Add new Education
                 </Button>
             </ButtonWrapper>
+            <ContentWrapper>
+                <SideBox>
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam eos perspiciatis quam animi minima molestiae ducimus eveniet
+                    alias, nemo modi odit quidem exercitationem adipisci unde ex doloremque rem. Id, excepturi.
+                </SideBox>
+                <ContentBox>
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam eos perspiciatis quam animi minima molestiae ducimus eveniet
+                    alias, nemo modi odit quidem exercitationem adipisci unde ex doloremque rem. Id, excepturi.
+                </ContentBox>
+            </ContentWrapper>
             <Modal open={open} setClose={setOpen}>
                 <EducationForm />
             </Modal>
