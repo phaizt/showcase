@@ -109,7 +109,8 @@ const Home: NextPage<{ educations: EducationType[] }> = (props) => {
 
     const handleSubmit = (params: EducationType) => {
         let data = Object.assign(params, { name: name })
-        dispatch(save({ payload: data }))
+        console.log(data)
+        // dispatch(save({ payload: data }))
     }
 
     const handleClickBookmark = (event: MouseEvent, idx: number, id: number | undefined) => {
