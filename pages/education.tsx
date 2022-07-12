@@ -37,10 +37,19 @@ const SideBox = styled.div`
         width: 100%;
     }
 `
+const ContentBoxWrapper = styled.div`
+    display: flex;
+    width: 70%;
+    gap: 1rem;
+    flex-direction: column;
+`
+
 const ContentBox = styled.div`
     background: #cecece;
-    width: 70%;
     padding: 1rem;
+    &.highlight {
+        background: #f2e3cd;
+    }
     @media screen and (max-width: 991px) {
         width: 100%;
     }
@@ -61,6 +70,24 @@ const BookmarkLink = styled.li`
     }
 `
 
+const StudyField: React.FC<EducationType> = (props) => {
+    const { school, start_year, end_year, degree, grade, field_of_study, description } = props
+    return (
+        <>
+            <h2>Graduated @ {school} </h2>
+            <h2>
+                {start_year} - {end_year}
+            </h2>
+            <ul>
+                <li>degree : {degree}</li>
+                <li>grade : {grade}</li>
+                <li>field of study : {field_of_study}</li>
+                <li>description : {description}</li>
+            </ul>
+        </>
+    )
+}
+
 const Home: NextPage<{ educations: EducationType[] }> = (props) => {
     const liRef = useRef<Array<HTMLLIElement | null>>([])
     const { educations: education_props } = props
@@ -69,21 +96,32 @@ const Home: NextPage<{ educations: EducationType[] }> = (props) => {
     const router = useRouter()
     const { name } = router.query
     const [open, setOpen] = useState(false)
+    const [study, setStudy] = useState<EducationType>()
+    const [isBookmarkClicked, setIsBookmarkClicked] = useState(false)
 
     useEffect(() => {
         dispatch(educationAction.setData(education_props))
     }, [education_props])
+
+    useEffect(() => {
+        setStudy(educations[0])
+    }, [educations])
 
     const handleSubmit = (params: EducationType) => {
         let data = Object.assign(params, { name: name })
         dispatch(save({ payload: data }))
     }
 
-    const handleClickBookmark = (event: MouseEvent, idx: number) => {
+    const handleClickBookmark = (event: MouseEvent, idx: number, id: number | undefined) => {
         event.preventDefault()
         liRef.current.map((el) => el?.classList.remove("active"))
         liRef.current[idx]?.classList.add("active")
+        axios.get(`${process.env.NEXT_PUBLIC_API_URL}/education/${id}`).then(({ data }) => {
+            setStudy(data.data)
+            setIsBookmarkClicked(true)
+        })
     }
+    let contents: Array<JSX.Element> = []
 
     return (
         <FormWrapper>
@@ -96,22 +134,33 @@ const Home: NextPage<{ educations: EducationType[] }> = (props) => {
             <ContentWrapper>
                 <SideBox>
                     <Bookmark>
-                        {educations.map((el, idx) => (
-                            <BookmarkLink
-                                ref={(el) => (liRef!.current[idx] = el)}
-                                className=""
-                                key={idx}
-                                onClick={(event) => handleClickBookmark(event, idx)}
-                            >
-                                {el.school}
-                            </BookmarkLink>
-                        ))}
+                        {educations.map((el, idx) => {
+                            contents.push(
+                                <ContentBox key={idx}>
+                                    <StudyField {...el} />
+                                </ContentBox>
+                            )
+                            return (
+                                <BookmarkLink
+                                    ref={(el) => (liRef!.current[idx] = el)}
+                                    className=""
+                                    key={idx}
+                                    onClick={(event) => handleClickBookmark(event, idx, el?.id)}
+                                >
+                                    {el.school}
+                                </BookmarkLink>
+                            )
+                        })}
                     </Bookmark>
                 </SideBox>
-                <ContentBox>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam eos perspiciatis quam animi minima molestiae ducimus eveniet
-                    alias, nemo modi odit quidem exercitationem adipisci unde ex doloremque rem. Id, excepturi.
-                </ContentBox>
+                <ContentBoxWrapper>
+                    {study && isBookmarkClicked && (
+                        <ContentBox className="highlight">
+                            <StudyField {...study} />
+                        </ContentBox>
+                    )}
+                    {contents}
+                </ContentBoxWrapper>
             </ContentWrapper>
             <Modal open={open} setClose={setOpen}>
                 <EducationForm submit={handleSubmit} />

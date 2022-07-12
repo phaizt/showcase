@@ -1,4 +1,7 @@
+import { MouseEvent } from "react"
+
 export type EducationType = {
+    id?: number
     name: string
     school: string
     degree: string
