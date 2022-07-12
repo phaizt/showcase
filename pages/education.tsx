@@ -8,6 +8,7 @@ import EducationForm from "components/pages/education/education.form"
 import { useAppDispatch, useAppSelector } from "store/main-store"
 import { EducationType } from "types/education.type"
 import { educationAction, save } from "store/reducers/education.reducer"
+import moment from "moment"
 import axios from "axios"
 
 const FormWrapper = styled.div`
@@ -65,6 +66,7 @@ const Bookmark = styled.ul`
 
 const BookmarkLink = styled.li`
     cursor: pointer;
+    margin-bottom: 0.5rem;
     &.active {
         font-weight: bold;
     }
@@ -108,9 +110,10 @@ const Home: NextPage<{ educations: EducationType[] }> = (props) => {
     }, [educations])
 
     const handleSubmit = (params: EducationType) => {
-        let data = Object.assign(params, { name: name })
-        console.log(data)
-        // dispatch(save({ payload: data }))
+        const start_year = moment(params.start_year).format("YYYY")
+        const end_year = moment(params.end_year).format("YYYY")
+        let data = Object.assign(params, { name: name, start_year, end_year })
+        dispatch(save({ payload: data }))
     }
 
     const handleClickBookmark = (event: MouseEvent, idx: number, id: number | undefined) => {

@@ -3,6 +3,7 @@ import { Formik, Field, Form, FormikHelpers } from "formik"
 import { Button } from "components/Form/Button"
 import { EducationType } from "types/education.type"
 import CustomSelect from "components/Form/ReactSelect"
+import { DatePickerField } from "components/Form/Datepicker"
 import axios from "axios"
 
 type Props = {
@@ -67,12 +68,12 @@ const App: React.FC<Props> = (props) => {
 
                     <div className="form-group">
                         <label htmlFor="start_year">Start Year</label>
-                        <Field className="form-control" id="start_year" name="start_year" />
+                        <DatePickerField name="start_year" className="form-control" showYearPicker dateFormat="yyyy" />
                     </div>
 
                     <div className="form-group">
                         <label htmlFor="end_year">End Year</label>
-                        <Field className="form-control" id="end_year" name="end_year" />
+                        <DatePickerField name="end_year" className="form-control" showYearPicker dateFormat="yyyy" />
                     </div>
 
                     <div className="form-group">
