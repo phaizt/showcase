@@ -3,6 +3,7 @@ import { Formik, Field, Form, FormikHelpers } from "formik"
 import { Button } from "components/Form/Button"
 import { EducationType } from "types/education.type"
 import CustomSelect from "components/Form/ReactSelect"
+import axios from "axios"
 
 type Props = {
     submit: (params: EducationType) => void
@@ -12,6 +13,15 @@ const options = [
     { value: "foo", label: "Foo" },
     { value: "bar", label: "Bar" },
 ]
+
+const promiseOptions = async (inputValue: string) => {
+    if (inputValue.length >= 3) {
+        const data = await axios.get(`http://universities.hipolabs.com/search?name=${inputValue}`)
+        const opt = data.data.map((el: { name: string }) => ({ value: el.name, label: el.name }))
+        return opt
+    }
+    return []
+}
 
 const App: React.FC<Props> = (props) => {
     return (
@@ -37,19 +47,14 @@ const App: React.FC<Props> = (props) => {
                     <div className="form-group">
                         <label htmlFor="school">School Name</label>
                         <Field
+                            isClearable={true}
                             className="custom-select"
                             name="school"
-                            options={options}
+                            options={promiseOptions}
                             component={CustomSelect}
-                            placeholder="Select a language..."
-                            isMulti={false}
+                            placeholder="Search University"
                         />
                     </div>
-                    {/* <div className="form-group">
-                        <label htmlFor="school">School Name</label>
-                        <Field className="form-control" id="school" name="school" />
-                    </div> */}
-
                     <div className="form-group">
                         <label htmlFor="degree">Degree</label>
                         <Field className="form-control" id="degree" name="degree" />
