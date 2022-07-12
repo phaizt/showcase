@@ -9,18 +9,26 @@ type Data<T = {}> = {
     data: T
 }
 
-const list = async () => {
-    const aa = await connect().then(async (conn) => {
-        return conn.manager.find(Education)
+const list = async (name: string) => {
+    const list = await connect().then(async (conn) => {
+        const repo = conn.manager.getRepository(Education)
+        return repo.find({
+            where: {
+                name: name,
+            },
+            order: {
+                id: "desc",
+            },
+        })
     })
-    return aa
+    return list
 }
 
 const create = async (body: EducationType) => {
-    connect().then(async (conn) => {
+    return await connect().then(async (conn) => {
         const edu = new Education()
         Object.assign(edu, body)
-        conn.manager.save(edu)
+        return await conn.manager.save(edu)
     })
 }
 
@@ -32,15 +40,17 @@ const destroy = async () => {
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
     if (req.method === "POST") {
-        create(req.body)
+        const data = await create(req.body)
+        console.log(data)
         res.status(200).json({
             status: "OK",
-            data: {},
+            data: data,
         })
     } else if (req.method === "GET") {
+        const name: string = req.query.name?.toString() || ""
         res.status(200).json({
             status: "Oke",
-            data: await list(),
+            data: await list(name),
         })
     } else if (req.method === "DELETE") {
         if (req.body.destroy === 1) {

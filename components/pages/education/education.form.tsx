@@ -13,6 +13,7 @@ const App: React.FC<Props> = (props) => {
             <h1>Education</h1>
             <Formik
                 initialValues={{
+                    name: "",
                     school: "",
                     degree: "",
                     field_of_study: "",

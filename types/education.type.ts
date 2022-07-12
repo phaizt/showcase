@@ -1,4 +1,5 @@
 export type EducationType = {
+    name: string
     school: string
     degree: string
     field_of_study: string

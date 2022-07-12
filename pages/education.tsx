@@ -1,13 +1,13 @@
-import { useEffect, useState } from "react"
-import type { NextPage } from "next"
+import { useEffect, useState, useRef, MouseEventHandler, MouseEvent } from "react"
+import type { NextPage, GetServerSideProps } from "next"
 import styled from "styled-components"
 import { useRouter } from "next/router"
 import { Button } from "components/Form/Button"
 import Modal from "components/Modal/Modal"
 import EducationForm from "components/pages/education/education.form"
-import { useAppDispatch, useAppSelector, RootState } from "store/main-store"
+import { useAppDispatch, useAppSelector } from "store/main-store"
 import { EducationType } from "types/education.type"
-import { educationAction } from "store/reducers/education.reducer"
+import { educationAction, save } from "store/reducers/education.reducer"
 import axios from "axios"
 
 const FormWrapper = styled.div`
@@ -54,19 +54,35 @@ const Bookmark = styled.ul`
     list-style-type: none;
 `
 
+const BookmarkLink = styled.li`
+    cursor: pointer;
+    &.active {
+        font-weight: bold;
+    }
+`
+
 const Home: NextPage<{ educations: EducationType[] }> = (props) => {
-    const { educations } = props
+    const liRef = useRef<Array<HTMLLIElement | null>>([])
+    const { educations: education_props } = props
+    const { educations } = useAppSelector()
     const dispatch = useAppDispatch()
     const router = useRouter()
     const { name } = router.query
     const [open, setOpen] = useState(false)
 
     useEffect(() => {
-        dispatch(educationAction.setData(educations))
-    }, [dispatch, educations])
+        dispatch(educationAction.setData(education_props))
+    }, [education_props])
 
     const handleSubmit = (params: EducationType) => {
-        dispatch(educationAction.save(params))
+        let data = Object.assign(params, { name: name })
+        dispatch(save({ payload: data }))
+    }
+
+    const handleClickBookmark = (event: MouseEvent, idx: number) => {
+        event.preventDefault()
+        liRef.current.map((el) => el?.classList.remove("active"))
+        liRef.current[idx]?.classList.add("active")
     }
 
     return (
@@ -81,7 +97,14 @@ const Home: NextPage<{ educations: EducationType[] }> = (props) => {
                 <SideBox>
                     <Bookmark>
                         {educations.map((el, idx) => (
-                            <li key={idx}>{el.school}</li>
+                            <BookmarkLink
+                                ref={(el) => (liRef!.current[idx] = el)}
+                                className=""
+                                key={idx}
+                                onClick={(event) => handleClickBookmark(event, idx)}
+                            >
+                                {el.school}
+                            </BookmarkLink>
                         ))}
                     </Bookmark>
                 </SideBox>
@@ -97,16 +120,16 @@ const Home: NextPage<{ educations: EducationType[] }> = (props) => {
     )
 }
 
-export const getStaticProps = async () => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
+    const name = context?.query?.name
     const data = await axios
-        .get(`${process.env.NEXT_PUBLIC_API_URL}/education`)
-        .then((response) => {
-            return response.data
+        .get(`${process.env.NEXT_PUBLIC_API_URL}/education?name=${name}`)
+        .then(({ data }) => {
+            return data.data
         })
         .catch((err) => {})
     return {
-        props: { educations: data.data },
-        revalidate: 1,
+        props: { educations: data },
     }
 }
 
