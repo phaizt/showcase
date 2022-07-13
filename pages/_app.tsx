@@ -11,7 +11,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         <Provider store={store}>
             <Head>
                 <title>showcase</title>
-                <meta httpEquiv="Content-Security-Policy" content="upgrade-insecure-requests" />
+                {/* <meta httpEquiv="Content-Security-Policy" content="upgrade-insecure-requests" /> */}
             </Head>
             <Layout>
                 <Component {...pageProps} />
